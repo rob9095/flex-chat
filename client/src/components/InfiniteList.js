@@ -47,13 +47,18 @@ class InfiniteListExample extends Component {
     this.handleDataFetch()
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     if (!Object.is(prevProps.lastItem, this.props.lastItem)) {
       console.log('last item changed!')
-      this.setState({
+      await this.setState({
         data: [...this.state.data, this.props.lastItem],
       })
-      //this.handleDataFetch({requestedPage: 1})
+      this.props.fetchOnChange && this.handleDataFetch({requestedPage: 1})
+      //find the new message and scroll to it
+      let m = document.getElementById('infite-list')
+      if (m) {
+        m.scrollTop = m.scrollHeight;
+      }
     }
   }
 
@@ -89,8 +94,8 @@ class InfiniteListExample extends Component {
       populateArray
     })
       .then(({ data, activePage, totalPages, rowsPerPage, skip }) => {
+        const hasMore = data.length > 0 ? true : false
         data = activePage === 1 ? data : [...this.state.data.filter(d=>d.docType !== 'skeleton'), ...data].reduce((acc,cv)=>acc.map(doc=>doc._id).indexOf(cv._id) !== -1 ? [...acc] : [...acc,cv],[])
-        const hasMore = data.length >= rowsPerPage * totalPages ? false : true
         this.setState({
           skip,
           data,
@@ -116,12 +121,13 @@ class InfiniteListExample extends Component {
   }
 
   handleInfiniteOnLoad = async () => {
-    let data = this.state.data;
     await this.setState({
       loading: true,
       activePage: this.state.activePage + 1,
     });
+    await this.handleDataFetch()
     if (!this.state.hasMore) {
+      console.log('no more messages!')
       // this.props.id && message.config({
       //   getContainer: () => document.getElementById(this.props.id),
       // });
@@ -130,19 +136,19 @@ class InfiniteListExample extends Component {
         nType: 'notification',
         id: 'scan-log-no-more',
         message: this.props.noMoreText || 'All records loaded',
-        onClose: ()=>this.props.removeNotification({id: 'scan-log-no-more',})
+        onClose: () => this.props.removeNotification({ id: 'scan-log-no-more', })
       })
       this.setState({
         loading: false,
       });
       return;
     }
-    this.handleDataFetch()
   }
 
   render() {
+    console.log({hasMore: this.state.hasMore})
     return (
-      <div className="contain" style={{height: this.props.height || 300,}}>
+      <div id={'infite-list'} className="contain" style={{height: this.props.height || 300,}}>
         <InfiniteScroll
           initialLoad={false}
           pageStart={0}

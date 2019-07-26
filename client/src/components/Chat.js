@@ -39,10 +39,10 @@ class Chat extends Component {
 
   render() {
     return(
-      <div className="full-pad">
+      <div className="full-pad contain" style={{height: '100%'}}>
         <InfiniteList
           lastItem={this.state.lastMessage}
-          height={200}
+          //height={200}
           id="chat-log"
           sortColumn="createdAt"
           sortDir="ascending"
@@ -52,6 +52,7 @@ class Chat extends Component {
           renderItem={(item) =>
             <List.Item
               key={item._id}
+              id={item._id}
             >
               <List.Item.Meta
                 description={

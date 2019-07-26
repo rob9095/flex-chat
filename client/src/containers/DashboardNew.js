@@ -4,15 +4,6 @@ import { connect } from 'react-redux';
 import { logout } from '../store/actions/auth';
 import { Layout, Menu, Breadcrumb, Icon, Row, Col } from 'antd'
 import NotFound from '../components/NotFound';
-import ProductTable from '../components/ProductTable';
-import ProductTableNew from '../components/ProductTableNew';
-import PurchaseOrderTable from '../components/PurchaseOrderTable';
-import PoProductTable from '../components/PoProductTable';
-import PoProductTableNew from '../components/PoProductTableNew';
-import PoTableNew from '../components/PoTableNew';
-import ProductTableLegacy from '../components/ProductTableLegacy';
-import ReceiveInventory from '../components/ReceiveInventory';
-import ScanTable from '../components/ScanTable';
 import AccountPage from '../components/AccountPage';
 import StkdNotification from '../components/StkdNotification';
 import DashboardHeader from '../components/DashboardHeader';
@@ -247,35 +238,8 @@ class DashboardNew extends Component {
           <Layout style={{overflow: 'auto', background: '#fefefe', height: '100%' }}>
             <div style={{height: '100%'}}>
               <Switch>
-                <Route exact path="/app/po-products-old" render={props => (
-                  <PoProductTable showHeader {...props} />
-                )} />
                 <Route exact path="/app/chat" render={props => (
                   <Chat {...this.props} />
-                )} />
-                <Route exact path="/app/po-products" render={props => (
-                  <PoProductTableNew {...props} />
-                )} />
-                <Route exact path="/app/po-products/:po" render={props => (
-                  <PoProductTableNew {...props} />
-                )} />
-                <Route exact path="/app/purchase-orders-old" render={props => (
-                  <PurchaseOrderTable {...props} />
-                )} />
-                <Route exact path="/app/purchase-orders" render={props => (
-                  <PoTableNew {...props} />
-                )} />
-                <Route exact path="/app/products-old" render={props => (
-                  <ProductTable {...props} />
-                )} />
-                <Route exact path="/app/products" render={props => (
-                  <ProductTableNew {...props} />
-                )} />
-                <Route exact path="/app/receive-inventory" render={props => (
-                  <ReceiveInventory {...props} />
-                )} />
-                <Route exact path="/app/scans" render={props => (
-                  <ScanTable {...props} />
                 )} />
                 <Route exact path="/app/account" render={props => (
                   <AccountPage clientWidth={this.state.clientWidth} {...props} />

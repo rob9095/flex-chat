@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Alert, Drawer, Form, Button, Col, Row, Input, Select, DatePicker, TimePicker } from 'antd';
 import AutoCompleteInput from './AutoCompleteInput';
-import CascaderSelect from "./CascaderSelect";
 const moment = require('moment');
 
 const Option = Select.Option;
@@ -181,37 +180,6 @@ class DrawerForm extends Component {
                   />
                )}
             </FormItem>
-          </Col>
-        )
-      } else if (i.type === 'cascader') {
-        return (
-          <Col xs={i.span * 3} sm={i.span} key={`${item._id || ''}-${i.id}cascader-select`}>
-            <FormItem label={`${i.text}`}>
-              {getFieldDecorator(i.id, {
-                rules: [{
-                  required: i.required,
-                }],
-              })(
-                <CascaderSelect
-                  domRef={`${item._id || ''}-${i.id}edit-cascader-select`}
-                  data={Array.isArray(item[i.id]) ? item[i.id].map(box => ({ ...box, [i.parent.defaultKey]: item[i.parent.defaultKey], [i.child.defaultKey]: item[i.child.defaultKey] })).filter(box => box.scanToPo == true) : []}
-                  parent={i.parent}
-                  child={i.child}
-                  reverseData={i.reverseData}
-                  onUpdate={(v,o)=>this.handlerCascaderUpdate(v,o,i)}
-                >
-                  <Input style={{ display: "none" }} />
-                </CascaderSelect>
-              )}
-            </FormItem>
-            <div style={{display: 'none'}}>
-              {getFieldDecorator(i.parent.defaultKey, { initialValue: item[i.parent.defaultKey] })(
-                <Input />
-              )}
-              {getFieldDecorator(i.child.defaultKey, { initialValue: item[i.child.defaultKey] })(
-                <Input />
-              )}
-            </div>
           </Col>
         )
       } else if (i.type === 'autoComplete') {

@@ -18,7 +18,7 @@ import StkdNotification from '../components/StkdNotification';
 import DashboardHeader from '../components/DashboardHeader';
 import Svg from '../svg/svgs';
 import HomeCal from '../components/HomeCal';
-
+import Chat from '../components/Chat';
 
 const { homeSvg, basketSvg, upDown, sliders, logoWhite, stocktdLogoWhite, arrowCircle } = Svg
 const { SubMenu } = Menu;
@@ -36,6 +36,7 @@ class DashboardNew extends Component {
       openMenuKeys: [],
       siderTopMenuOptions: [
         { id: 'appHome', title: 'Home', to: "/app", icon: <Icon style={{width: 14}} component={homeSvg} />, },
+        { id: 'chat', title: 'Chat', to: "/app/chat", icon: <Icon type="chat" />, },
         // { title: 'Orders', icon: <Icon style={{width: 14}} component={basketSvg} />, },
         // {
         //   type: 'subMenu', title: 'Inventory', icon: <Icon style={{width: 14}} component={upDown} />, children: [
@@ -248,6 +249,9 @@ class DashboardNew extends Component {
               <Switch>
                 <Route exact path="/app/po-products-old" render={props => (
                   <PoProductTable showHeader {...props} />
+                )} />
+                <Route exact path="/app/chat" render={props => (
+                  <Chat showHeader {...props} />
                 )} />
                 <Route exact path="/app/po-products" render={props => (
                   <PoProductTableNew {...props} />

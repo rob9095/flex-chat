@@ -16,7 +16,7 @@ const simpleSchemas = {
     user: Joi.string().regex(/^[a-f\d]{24}$/i).required().error(() => `Invalid user id provided`),
     startTime: Joi.date().required(),
     endTime: Joi.date().required(),
-    warehouse: Joi.string().valid(['Irvine DLA9','Los Angelos LAX1']).required(),
+    warehouse: Joi.string().valid(['Irvine DLA9','Los Angeles LAX1']).required(),
     status: Joi.string().valid(['Worked','Scheduled']).required(),
   }),
 }
@@ -40,7 +40,7 @@ const validSchemas = {
 
   //model routes
   '/api/models/query': Joi.object().keys({
-    model: Joi.string().valid(['Shift']).required(),
+    model: Joi.string().valid(['Shift','Chat']).required(),
     sortBy: Joi.string(),
     sortDirection: Joi.string().lowercase().valid(['asc', 'desc', 'ascending', 'descending', '1', '-1']).default('asc'),
     activePage: Joi.number().integer().default(1),

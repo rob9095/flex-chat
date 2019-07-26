@@ -76,7 +76,15 @@ class InfiniteListExample extends Component {
       }
     })
     let query = this.props.filters ? [...this.state.query, ...this.props.filters] : this.state.query
-    await this.props.queryModelData(this.props.queryModel, query, this.state.column, this.state.direction, requestedPage, requestedRowsPerPage, this.props.currentUser.user.company, populateArray)
+    await this.props.queryModelData({
+      model: this.props.queryModel,
+      query,
+      sortBy: this.state.column,
+      sortDirection: this.state.direction,
+      activePage: requestedPage, 
+      rowsPerPage: requestedRowsPerPage,
+      populateArray
+    })
       .then(({ data, activePage, totalPages, rowsPerPage, skip }) => {
         data = activePage === 1 ? data : [...this.state.data.filter(d=>d.docType !== 'skeleton'), ...data].reduce((acc,cv)=>acc.map(doc=>doc._id).indexOf(cv._id) !== -1 ? [...acc] : [...acc,cv],[])
         const hasMore = data.length >= rowsPerPage * totalPages ? false : true

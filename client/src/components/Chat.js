@@ -20,6 +20,20 @@ class Chat extends Component {
       console.log({lastMessage})
       this.setState({lastMessage})
     })
+    this._socket.on('userTyping', ({ user, message }) => {
+      console.log({ user, message })
+      this.setState({
+        userTyping: {
+          user,
+          message
+        }
+      })
+    })
+    this._socket.on('userStopTyping', () => {
+      this.setState({
+        userTyping: null
+      })
+    })
   }
 
   handleMessageSend = () => {
@@ -35,6 +49,30 @@ class Chat extends Component {
     setTimeout(()=>{
       this.setState({message: '', submitLoading: false})
     },250) 
+  }
+
+  handleTypeStop = (message) => {
+    //wait 1 second, compare the recent message to the message in state, stop typing if they are the same
+    setTimeout(()=>{
+      if (message === this.state.message) {
+        this._socket.emit("stopTyping", {})  
+      }
+    },1000)
+  }
+
+  handleInputChange = (e) => {
+    console.log({target: e.which})
+    let message = e.target.value
+    this.setState({ message, })
+    if (message.length) {
+      this._socket.emit("typing", {message, id: this.props.currentUser.user.id})
+      this.handleTypeStop(message)
+    }
+  }
+
+  handleEnterPress = (e) => {
+    e.preventDefault()
+    this.handleMessageSend()
   }
 
   render() {
@@ -66,8 +104,13 @@ class Chat extends Component {
           }
         />
         <div>
+          {this.state.userTyping && (
+            this.state.userTyping.user.email + ' typing'
+          )}
+        </div>
+        <div>
           <Form.Item>
-            <Input.TextArea placeholder={''} onChange={(e)=>this.setState({message: e.target.value})} value={this.state.message} rows={4} />
+            <Input.TextArea onPressEnter={this.handleEnterPress} placeholder={'Your Message'} onChange={this.handleInputChange} value={this.state.message} />
           </Form.Item>
           <Form.Item style={{textAlign: 'right'}}>
             <Button htmlType="submit" loading={this.state.submitLoading} onClick={this.handleMessageSend} type="primary">

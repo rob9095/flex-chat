@@ -36,16 +36,21 @@ socket.on("connection", socket => {
 	});
 
 	//Someone is typing
-	socket.on("typing", data => {
-		socket.broadcast.emit("notifyTyping", {
-			user: data.user,
-			message: data.message
+	socket.on("typing", async ({id, message}) => {
+		let user = await db.User.findOne({ _id: id })
+		if (!user) {
+			return
+		}
+		socket.broadcast.emit("userTyping", {
+			user,
+			message,
 		});
 	});
 
 	//when soemone stops typing
 	socket.on("stopTyping", () => {
-		socket.broadcast.emit("notifyStopTyping");
+		console.log('stopped typing')
+		socket.broadcast.emit("userStopTyping");
 	});
 
 	socket.on("newMessage", async function ({ message, user }) {

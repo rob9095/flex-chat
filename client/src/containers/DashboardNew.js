@@ -251,7 +251,7 @@ class DashboardNew extends Component {
                   <PoProductTable showHeader {...props} />
                 )} />
                 <Route exact path="/app/chat" render={props => (
-                  <Chat showHeader {...props} />
+                  <Chat {...this.props} />
                 )} />
                 <Route exact path="/app/po-products" render={props => (
                   <PoProductTableNew {...props} />

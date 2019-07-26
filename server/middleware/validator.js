@@ -40,7 +40,7 @@ const validSchemas = {
 
   //model routes
   '/api/models/query': Joi.object().keys({
-    model: Joi.string().valid(['Shift','Chat']).required(),
+    model: Joi.string().valid(['Shift','ChatMessage']).required(),
     sortBy: Joi.string(),
     sortDirection: Joi.string().lowercase().valid(['asc', 'desc', 'ascending', 'descending', '1', '-1']).default('asc'),
     activePage: Joi.number().integer().default(1),

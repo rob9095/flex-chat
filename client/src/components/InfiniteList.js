@@ -50,7 +50,10 @@ class InfiniteListExample extends Component {
   componentDidUpdate(prevProps) {
     if (!Object.is(prevProps.lastItem, this.props.lastItem)) {
       console.log('last item changed!')
-      this.handleDataFetch({requestedPage: 1})
+      this.setState({
+        data: [...this.state.data, this.props.lastItem],
+      })
+      //this.handleDataFetch({requestedPage: 1})
     }
   }
 

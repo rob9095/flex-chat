@@ -29,7 +29,12 @@ const shiftSchema = new mongoose.Schema({
 	},
 	{
 		timestamps: true
-  });
+  },
+  { toJSON: { virtuals: true } });
+
+shiftSchema.virtual('shiftKey').get(function () {
+  return `${this.warehouse}-${this.startTime}`
+})
 
 const Shift = mongoose.model('Shift', shiftSchema);
 module.exports = Shift;

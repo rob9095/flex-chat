@@ -8,4 +8,5 @@ mongoose.connect('mongodb://localhost/flex-chat', {
 
 module.exports.User = require('./user');
 module.exports.Shift = require('./shift');
+module.exports.ChatMessage = require('./chatMessage');
 module.exports.UserToken = require('./userToken');

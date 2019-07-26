@@ -7,14 +7,11 @@ const errorHandler = require('./handlers/error');
 const authRoutes = require('./routes/auth');
 const accountRoutes = require('./routes/account');
 const modelRoutes = require('./routes/models');
+const chatRoutes = require('./routes/chat');
 const db = require("./models");
 const { loginRequired, ensureCorrectUser } = require('./middleware/auth');
 const { validator } = require('./middleware/validator');
 const PORT = 8080;
-
-
-//require the http module
-const http = require("http").Server(app);
 
 // require the socket.io module
 const io = require("socket.io");
@@ -23,23 +20,12 @@ const io = require("socket.io");
 app.use(cors());
 app.use(bodyParser.json({limit: '50mb'}));
 
-// all routes here
-
-// auth routes
-app.use('/api/auth', validator, authRoutes);
-
-// account routes
-app.use('/api/account', validator, accountRoutes);
-
-//generic model routes
-app.use('/api/models', validator, modelRoutes);
-
-
-
-app.use(errorHandler);
+const server = app.listen(PORT, function(){
+	console.log(`Server starting on port ${PORT}`)
+});
 
 //integrating socketio
-socket = io(http);
+const socket = io(server, {path: '/api/chat/listen'});
 
 //setup event listener
 socket.on("connection", socket => {
@@ -62,24 +48,42 @@ socket.on("connection", socket => {
 		socket.broadcast.emit("notifyStopTyping");
 	});
 
-	socket.on("chat message", function (msg) {
-		console.log("message: " + msg);
-
-		//broadcast message to everyone in port:8080 except yourself.
-		socket.broadcast.emit("received", { message: msg });
-
-		//save chat to the database
-		// connect.then(db => {
-		// 	console.log("connected correctly to the server");
-		// 	 let chatMessage = new Chat({ message: msg, sender: "Anonymous" });
-
-		// 	 chatMessage.save();
-		// });
+	socket.on("newMessage", async function ({ message, user }) {
+		console.log({ message });
+		//save to db
+		let u = await db.User.findOne({ _id: user.id })
+		let s = await db.Shift.findOne({ _id: '5d3a2a910f15f03ce18fb968' })
+		if (!u || !s) {
+			return
+		}
+		lastMessage = await db.ChatMessage.create({ message, user: u._id, shift: s._id })
+		//send back to client
+		socket.emit("messageSaved", { lastMessage });
+		//broadcast message to everyone except yourself.
+		socket.broadcast.emit("messageSaved", { lastMessage });
 	});
 });
+// app.use(function (req, res, next) {
+// 	req.socket = socket;
+// 	next();
+// });
 
-const server = app.listen(PORT, function(){
-	console.log(`Server starting on port ${PORT}`)
-});
+// all routes here
 
-server.timeout = 720000;
+// auth routes
+app.use('/api/auth', validator, authRoutes);
+
+// account routes
+app.use('/api/account', validator, accountRoutes);
+
+//generic model routes
+app.use('/api/models', validator, modelRoutes);
+
+//chat routes
+app.use('/api/chat', chatRoutes);
+
+
+
+app.use(errorHandler);
+
+

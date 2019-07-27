@@ -277,28 +277,19 @@ class DrawerForm extends Component {
         )
       }
     })
-    return (
-        <Drawer
-          className="stkd-drawer"
-          title={this.props.title}
-          width={document.documentElement.clientWidth < 300 ? '100%' : 300}
-          placement="right"
-          onClose={this.toggle}
-          visible={this.state.visible}
-          style={{
-            height: 'calc(100% - 55px)',
-            overflow: 'auto',
-            paddingBottom: 53,
-          }}
-        >
-          <div>
-            {this.state.showAlert && (
-              <Alert style={{ margin: '-10px 0px 10px 0px' }} closable afterClose={this.hideAlert} message={this.state.alertText} type={this.state.alertType} showIcon />
-            )}
-            <Form onKeyDown={(e)=>e.key === 'Enter' && this.handleSubmit(e)} layout="vertical" onSubmit={this.handleSubmit}>
-              <Row gutter={6}>{formInputs}</Row>
-            </Form>
-          </div>
+    let content = (
+      <div>
+        <div>
+          {this.state.showAlert && (
+            <Alert style={{ margin: '-10px 0px 10px 0px' }} closable afterClose={this.hideAlert} message={this.state.alertText} type={this.state.alertType} showIcon />
+          )}
+          <Form onKeyDown={(e) => e.key === 'Enter' && this.handleSubmit(e)} layout="vertical" onSubmit={this.handleSubmit}>
+            <Row gutter={6}>{formInputs}</Row>
+          </Form>
+        </div>
+        {this.props.noDrawer ? 
+          <Button block htmlType="submit" onClick={this.handleSubmit} type="primary">{this.props.submitText||'Save'}</Button>
+        :
           <div className="drawer-footer">
             <Button
               style={{
@@ -311,7 +302,29 @@ class DrawerForm extends Component {
             </Button>
             <Button htmlType="submit" onClick={this.handleSubmit} type="primary">Save</Button>
           </div>
-        </Drawer>
+        }
+      </div>
+    )
+    return (
+        this.props.noDrawer ? 
+          content
+          :
+          <Drawer
+            className="stkd-drawer"
+            title={this.props.title}
+            width={document.documentElement.clientWidth < 300 ? '100%' : 300}
+            placement="right"
+            onClose={this.toggle}
+            visible={this.state.visible}
+            style={{
+              height: 'calc(100% - 55px)',
+              overflow: 'auto',
+              paddingBottom: 53,
+            }}
+          >
+            {content}
+          </Drawer>
+        
     );
   }
 }

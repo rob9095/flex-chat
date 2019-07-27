@@ -146,7 +146,6 @@ class InfiniteListExample extends Component {
   }
 
   render() {
-    console.log({hasMore: this.state.hasMore})
     return (
       <div id={'infite-list'} className="contain" style={{height: this.props.height || 300,}}>
         <InfiniteScroll

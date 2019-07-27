@@ -65,7 +65,6 @@ class Chat extends Component {
   }
 
   handleInputChange = (e) => {
-    console.log({target: e.which})
     let message = e.target.value
     this.setState({ message, })
     if (message.length) {

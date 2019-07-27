@@ -8,12 +8,15 @@ import WrappedAuthForm from '../components/AuthForm';
 import WrappedForgotPassword from '../components/ForgotPassword';
 import NotFound from '../components/NotFound';
 import VerifyEmail from '../components/VerifyEmail';
+import Chat from '../components/Chat';
+import HomePage from '../components/HomePage';
 
 const Main = props => {
 	const { authUser, errors, removeError, addError, currentUser } = props;
 	return(
 			<Switch>
 				<Route path="/app" render={props => <DashboardNew currentUser={currentUser} {...props} />} />
+				<Route exact path="/" render={props => <HomePage currentUser={currentUser} />} /> 
 				<Route
 					exact
 					path="/(signin|login)/"

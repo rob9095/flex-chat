@@ -57,8 +57,10 @@ socket.on("connection", socket => {
 		console.log({ message });
 		//save to db
 		let u = await db.User.findOne({ _id: user.id })
-		let s = await db.Shift.findOne({ _id: '5d3a2a910f15f03ce18fb968' })
+		// find first shift for now
+		let s = await db.Shift.findOne()
 		if (!u || !s) {
+			socket.emit("messageFailed", { u, s });
 			return
 		}
 		lastMessage = await db.ChatMessage.create({ message, user: u._id, shift: s._id })

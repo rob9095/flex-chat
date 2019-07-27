@@ -34,6 +34,10 @@ class Chat extends Component {
         userTyping: null
       })
     })
+    this._socket.on('messageFailed', ({ u, s }) => {
+      console.log({ u, s })
+      alert('Message Failed!')
+    })
   }
 
   handleMessageSend = () => {

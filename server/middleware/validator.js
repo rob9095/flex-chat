@@ -150,7 +150,7 @@ exports.validateSchema = function (config) {
 exports.validator = function (req, res, next) {
   try {
     let schema = req.originalUrl.endsWith("/") ? req.originalUrl.slice(0,req.originalUrl.length-1) : req.originalUrl
-    console.log({schema, body: req.body})
+    //console.log({schema, body: req.body})
     let options = {
       stripUnknown: true,
     }

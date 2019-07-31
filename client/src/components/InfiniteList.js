@@ -43,8 +43,14 @@ class InfiniteListExample extends Component {
     }
   }
 
-  componentDidMount() {
-    this.handleDataFetch()
+  async componentDidMount() {
+    await this.handleDataFetch()
+    if (this.props.isReverse) {
+      let list = document.getElementById('infite-list')
+      if (list) {
+        list.scrollTop = list.scrollHeight;
+      }
+    }
   }
 
   async componentDidUpdate(prevProps) {
@@ -95,7 +101,11 @@ class InfiniteListExample extends Component {
     })
       .then(({ data, activePage, totalPages, rowsPerPage, skip }) => {
         const hasMore = data.length > 0 ? true : false
-        data = activePage === 1 ? data : [...this.state.data.filter(d=>d.docType !== 'skeleton'), ...data].reduce((acc,cv)=>acc.map(doc=>doc._id).indexOf(cv._id) !== -1 ? [...acc] : [...acc,cv],[])
+        data = this.props.isReverse ? data.reverse() : data
+        //data = activePage === 1 ? data : [...this.state.data.filter(d=>d.docType !== 'skeleton')]
+        data = this.props.isReverse ? [...data,...this.state.data] : [...this.state.data, ...data]
+        data = data.reduce((acc, cv) => acc.map(doc => doc._id).indexOf(cv._id) !== -1 ? [...acc] : [...acc, cv], []).filter(d => d.docType !== 'skeleton')
+
         this.setState({
           skip,
           data,
@@ -121,6 +131,7 @@ class InfiniteListExample extends Component {
   }
 
   handleInfiniteOnLoad = async () => {
+    console.log('handle inf load hit')
     await this.setState({
       loading: true,
       activePage: this.state.activePage + 1,
@@ -147,43 +158,48 @@ class InfiniteListExample extends Component {
 
   render() {
     return (
-      <div id={'infite-list'} className="contain" style={{height: this.props.height || 300,}}>
-        <InfiniteScroll
-          initialLoad={false}
-          pageStart={0}
-          loadMore={this.handleInfiniteOnLoad}
-          hasMore={!this.state.loading && this.state.hasMore}
-          useWindow={false}
-        >
-          <List
-            size="small"
-            dataSource={this.state.data}
-            renderItem={item => 
-            this.props.renderItem ?
-                this.props.renderItem(item, this.state.loading)
-              :
-              <List.Item key={item._id}>
-                <Skeleton paragraph={{ rows: 1, width: '100%' }} title={false} loading={this.state.loading} active>
-                <List.Item.Meta
-                  style={{alignItems: 'center'}}
-                  avatar={<Avatar>{this.props.currentUser.user.email[0]}</Avatar>}
-                  title={this.props.itemTitle.split('.').reduce((p, c) => p && p[c] || null, item)}
-                  description={this.props.itemDescription.split('.').reduce((p, c) => p && p[c] || null, item)}
-                />
-                <div>
-                  {this.props.itemContent.split('.').reduce((p, c) => p && p[c] || null, item)}
-                </div>
-                </Skeleton>
-              </List.Item>
-            }
+      <div>
+        {'Chat Items:' + this.state.data.length}
+        <div id={'infite-list'} className="contain" style={{ height: this.props.height || 300, }}>
+          <InfiniteScroll
+            initialLoad={false}
+            pageStart={0}
+            loadMore={this.handleInfiniteOnLoad}
+            hasMore={!this.state.loading && this.state.hasMore}
+            useWindow={false}
+            isReverse={true}
+            threshold={1}
           >
-            {/* {this.state.loading && this.state.hasMore && (
-              <div className="flex justify-content-center align-items-center" style={{width: '100%', height: '100%'}}>
-                <Spin />
-              </div>
-            )} */}
-          </List>
-        </InfiniteScroll>
+            <List
+              size="small"
+              dataSource={this.state.data}
+              renderItem={item =>
+                this.props.renderItem ?
+                  this.props.renderItem(item, this.state.loading)
+                  :
+                  <List.Item key={item._id}>
+                    <Skeleton paragraph={{ rows: 1, width: '100%' }} title={false} loading={this.state.loading} active>
+                      <List.Item.Meta
+                        style={{ alignItems: 'center' }}
+                        avatar={<Avatar>{this.props.currentUser.user.email[0]}</Avatar>}
+                        title={this.props.itemTitle.split('.').reduce((p, c) => p && p[c] || null, item)}
+                        description={this.props.itemDescription.split('.').reduce((p, c) => p && p[c] || null, item)}
+                      />
+                      <div>
+                        {this.props.itemContent.split('.').reduce((p, c) => p && p[c] || null, item)}
+                      </div>
+                    </Skeleton>
+                  </List.Item>
+              }
+            >
+              {/* {this.state.loading && this.state.hasMore && (
+                <div className="flex justify-content-center align-items-center" style={{width: '100%', height: '100%'}}>
+                  <Spin />
+                </div>
+              )} */}
+            </List>
+          </InfiniteScroll>
+        </div>
       </div>
     );
   }

@@ -82,11 +82,12 @@ class Chat extends Component {
     return(
       <div className="full-pad contain" style={{height: '100%'}}>
         <InfiniteList
+          isReverse={true}
           lastItem={this.state.lastMessage}
           //height={200}
           id="chat-log"
-          sortColumn="createdAt"
-          sortDir="ascending"
+          sortColumn="createdOn"
+          sortDir="descending"
           queryModel="ChatMessage"
           populateArray={[{ path: 'user' }]}
           noMoreText={'All Messages Loaded'}
@@ -99,7 +100,7 @@ class Chat extends Component {
                 description={
                   <div className="flex space-between">
                     <span>{item.message}</span>
-                  {moment(item.createdAt).fromNow()}
+                    {moment(item.createdOn).fromNow()}
                   </div>
                 }
               />

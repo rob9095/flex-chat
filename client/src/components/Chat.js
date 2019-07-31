@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Input, Form, Button, Skeleton, List } from 'antd'
+import { Input, Form, Button, List, Card } from 'antd'
 import InfiniteList from './InfiniteList';
 import moment from 'moment';
 
@@ -91,17 +91,19 @@ class Chat extends Component {
           queryModel="ChatMessage"
           populateArray={[{ path: 'user' }]}
           noMoreText={'All Messages Loaded'}
-          renderItem={(item) =>
+          renderItem={(item,loading) =>
             <List.Item
               key={item._id}
               id={item._id}
             >
               <List.Item.Meta
                 description={
-                  <div className="flex space-between">
-                    <span>{item.message}</span>
-                    {moment(item.createdOn).fromNow()}
-                  </div>
+                  <Card className={Math.random() > .5 ? "user-message chat-message" : "chat-message"} loading={loading}>
+                    <div className="flex space-between">
+                      <span>{item.message}</span>
+                      {moment(item.createdOn).fromNow()}
+                    </div>
+                  </Card>
                 }
               />
             </List.Item>

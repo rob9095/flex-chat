@@ -314,6 +314,32 @@ a.no-color {
 }
 
 
+/* Chat Messages */
+
+.ant-card.chat-message {
+  border-radius: 5px;
+  float: left;
+}
+
+.ant-card.chat-message.user-message {
+  background: #672bbf;
+  color: #fff;
+  float: right;
+}
+
+.ant-card.chat-message.ant-card-loading {
+  width: 20%;
+  height: 53px;
+}
+
+.ant-card.chat-message .ant-card-body {
+  padding: 5px 9px;
+}
+
+.ant-card.chat-message .ant-card-loading-content .ant-col {
+  width: 100%;
+}
+
 /* Basic Menu */
 
 .ant-menu-item {

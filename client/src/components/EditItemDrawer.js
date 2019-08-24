@@ -117,7 +117,7 @@ class DrawerForm extends Component {
       console.log(update)
       this.props.onSave(this.props.create ? [inputs] : [update],this.props.item._id)
       .then(res=>{
-        this.handleAlert('Changes Saved','success')
+        !res.hideAlert && this.handleAlert('Changes Saved','success')
       })
       .catch(err=>{
         console.log(err)

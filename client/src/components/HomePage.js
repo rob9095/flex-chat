@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { Input, Form, Button, Divider } from 'antd'
+import { Button, Divider } from 'antd'
 import { Link } from 'react-router-dom';
 import EditItemDrawer from './EditItemDrawer';
-import moment from 'moment';
+import Chat from '../components/Chat';
 
 import io from 'socket.io-client';
 
@@ -18,6 +18,7 @@ const editDrawerConfigs = {
 }
 
 class HomePage extends Component {
+  _socket = io.connect('http://localhost:8080', { path: '/api/chat/listen' });
   constructor(props) {
     super(props)
     this.state = {
@@ -29,10 +30,24 @@ class HomePage extends Component {
 
   }
 
+  handleNewUser = ({id, ...user}) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.setState({ user: user[0] })
+        console.log({user: this.state.user})
+        resolve({status: 'success', hideAlert: true})
+      } catch(err) {
+        reject(err)
+      }
+    })
+  }
+
   render() {
     return (
       <div className="full-pad contain flex align-items-center" style={{ height: '100%' }}>
-        {!this.state.user && (
+        {this.state.user ? (
+          <Chat user={this.state.user} />
+        ) : (
           <div className="flex flex-col align-items-center" style={{maxWidth: 252, margin: '0 auto'}}>
             <EditItemDrawer
               submitText={'Start Chat'}
@@ -42,7 +57,7 @@ class HomePage extends Component {
               create={true}
               noDrawer
               onClose={() => console.log('closed..')}
-              onSave={(data,id)=>console.log({data, id})}
+              onSave={this.handleNewUser}
             />
             <div className="flex align-items-center justify-content-center" style={{minWidth: '90%'}}>
               <div className="flex align-items-center" style={{minWidth: '40%'}}>

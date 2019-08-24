@@ -56,14 +56,19 @@ socket.on("connection", socket => {
 	socket.on("newMessage", async function ({ message, user }) {
 		console.log({ message });
 		//save to db
-		let u = await db.User.findOne({ _id: user.id })
+		//let u = await db.User.findOne({ _id: user.id })
 		// find first shift for now
-		let s = await db.Shift.findOne()
-		if (!u || !s) {
-			socket.emit("messageFailed", { u, s });
-			return
+		//let s = await db.Shift.findOne()
+		// if (!u || !s) {
+		// 	socket.emit("messageFailed", { u, s });
+		// 	return
+		// }
+		let { name, warehouse, startTime } = user
+		if (!name || !warehouse || !startTime) {
+			socket.emit("messageFailed", { user });
+			return 
 		}
-		lastMessage = await db.ChatMessage.create({ message, user: u._id, shift: s._id })
+		let lastMessage = await db.ChatMessage.create({ message, name, warehouse, startTime })
 		//send back to client
 		socket.emit("messageSaved", { lastMessage });
 		//broadcast message to everyone except yourself.

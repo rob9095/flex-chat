@@ -16,6 +16,7 @@ class Chat extends Component {
   }
 
   componentDidMount() {
+    let { user } = this.props
     this._socket.on('messageSaved', ({lastMessage}) => {
       console.log({lastMessage})
       this.setState({lastMessage})
@@ -34,8 +35,8 @@ class Chat extends Component {
         userTyping: null
       })
     })
-    this._socket.on('messageFailed', ({ u, s }) => {
-      console.log({ u, s })
+    this._socket.on('messageFailed', ({ user }) => {
+      console.log({ user })
       alert('Message Failed!')
     })
   }
@@ -49,7 +50,7 @@ class Chat extends Component {
     this.setState({
       submitLoading: true
     })
-    this._socket.emit("newMessage", {message, user: this.props.currentUser.user})
+    this._socket.emit("newMessage", {message, user: this.props.user})
     setTimeout(()=>{
       this.setState({message: '', submitLoading: false})
     },250) 
@@ -68,7 +69,7 @@ class Chat extends Component {
     let message = e.target.value
     this.setState({ message, })
     if (message.length) {
-      this._socket.emit("typing", {message, id: this.props.currentUser.user.id})
+      this._socket.emit("typing", {message, user: this.props.user})
       this.handleTypeStop(message)
     }
   }
@@ -80,7 +81,7 @@ class Chat extends Component {
 
   render() {
     return(
-      <div className="full-pad contain" style={{height: '100%'}}>
+      <div className="full-pad" style={{height: '100%', width: '100%'}}>
         <InfiniteList
           isReverse={true}
           lastItem={this.state.lastMessage}
@@ -98,7 +99,7 @@ class Chat extends Component {
             >
               <List.Item.Meta
                 description={
-                  <Card className={Math.random() > .5 ? "user-message chat-message" : "chat-message"} loading={loading}>
+                  <Card className={item.name == this.props.user.name ? "user-message chat-message" : "chat-message"} loading={loading}>
                     <div className="flex space-between">
                       <span>{item.message}</span>
                       {moment(item.createdOn).fromNow()}

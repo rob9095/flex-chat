@@ -22,7 +22,7 @@
     "jsonpack": "^1.1.5",
     "jsonwebtoken": "^8.2.0",
     "mongoose": "^5.0.10",
-    "nodemailer": "^4.6.8",
+    "nodemailer": "^6.4.16",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {

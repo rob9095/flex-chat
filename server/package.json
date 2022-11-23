@@ -23,7 +23,7 @@
     "jsonwebtoken": "^8.2.0",
     "mongoose": "^5.0.10",
     "nodemailer": "^4.6.8",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.5.0"
   },
   "devDependencies": {
     "locus": "^2.0.1"
